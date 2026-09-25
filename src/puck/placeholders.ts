@@ -15,10 +15,24 @@ const svgDataUri = (
   return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
 };
 
+// Photo-like gradient placeholder with no text, for images meant to look "real".
+const gradientDataUri = (from: string, to: string, w = 1600, h = 900) => {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+    <defs>
+      <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="${from}" />
+        <stop offset="100%" stop-color="${to}" />
+      </linearGradient>
+    </defs>
+    <rect width="100%" height="100%" fill="url(#g)" />
+  </svg>`;
+  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+};
+
 export const placeholderImages = {
-  hero: svgDataUri("#2b2b2b", "#e8e2d8", "Gabriel Ceslov"),
+  hero: gradientDataUri("#3a3630", "#0f0e0c"),
   textAccent: svgDataUri("#3a3f3a", "#e8e2d8", "Studio"),
-  featuredImage: svgDataUri("#4a4640", "#f2ede4", "Featured Work"),
+  featuredImage: gradientDataUri("#5c5347", "#211d18"),
   gallery1: svgDataUri("#5b4636", "#f2ede4", "Gallery I"),
   gallery2: svgDataUri("#3f4a52", "#f2ede4", "Gallery II"),
   gallery3: svgDataUri("#4d4038", "#f2ede4", "Gallery III"),
