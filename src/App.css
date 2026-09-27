@@ -146,50 +146,6 @@
   color: #666;
 }
 
-.pv-project {
-  display: flex;
-  gap: 32px;
-  padding: 48px 24px;
-  max-width: 1000px;
-  margin: 0 auto;
-  align-items: center;
-}
-
-.pv-project__image {
-  flex: 1 1 40%;
-  width: 100%;
-  border-radius: 4px;
-  object-fit: cover;
-  aspect-ratio: 4 / 3;
-}
-
-.pv-project__details {
-  flex: 1 1 60%;
-}
-
-.pv-project__title {
-  font-family: Georgia, serif;
-  margin: 0 0 8px;
-}
-
-.pv-project__meta {
-  color: #888;
-  font-size: 14px;
-  margin: 0 0 12px;
-}
-
-.pv-project__description {
-  line-height: 1.6;
-  color: #333;
-}
-
-.pv-project__link {
-  display: inline-block;
-  margin-top: 16px;
-  color: #1c1c1c;
-  font-weight: 600;
-}
-
 /* Custom image upload field */
 
 .image-field {

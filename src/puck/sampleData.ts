@@ -49,18 +49,5 @@ export const sampleData: Data<Components> = {
         ],
       },
     },
-    {
-      type: "Project",
-      props: {
-        id: "project-1",
-        title: "Between the Seasons",
-        role: "Photographer",
-        year: "2025",
-        description:
-          "A personal series documenting the transition between winter and spring in the countryside outside Prague.",
-        image: placeholderImages.project1,
-        link: "",
-      },
-    },
   ],
 };

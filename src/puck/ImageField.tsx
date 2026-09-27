@@ -1,14 +1,6 @@
 import { useRef, useState } from "react";
 import type { CustomField } from "@puckeditor/core";
-
-// Reads a local file and stores it as a data URL so no backend/upload is needed for the prototype.
-const readFileAsDataUrl = (file: File) =>
-  new Promise<string>((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
+import { SUPPORTED_IMAGE_TYPES, uploadPortfolioImage } from "../lib/storage";
 
 function ImagePicker({
   value,
@@ -18,16 +10,25 @@ function ImagePicker({
   onChange: (value: string) => void;
 }) {
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleFile = async (file: File | undefined) => {
     if (!file) return;
     setIsLoading(true);
+    setError(null);
     try {
-      const dataUrl = await readFileAsDataUrl(file);
-      onChange(dataUrl);
+      const imageUrl = await uploadPortfolioImage(file);
+      onChange(imageUrl);
+    } catch (uploadError) {
+      setError(
+        uploadError instanceof Error
+          ? uploadError.message
+          : "The image could not be uploaded.",
+      );
     } finally {
       setIsLoading(false);
+      if (inputRef.current) inputRef.current.value = "";
     }
   };
 
@@ -57,10 +58,11 @@ function ImagePicker({
           </button>
         )}
       </div>
+      {error && <p className="image-field__error">{error}</p>}
       <input
         ref={inputRef}
         type="file"
-        accept="image/*"
+        accept={SUPPORTED_IMAGE_TYPES.join(",")}
         className="image-field__input"
         onChange={(e) => handleFile(e.target.files?.[0])}
       />
