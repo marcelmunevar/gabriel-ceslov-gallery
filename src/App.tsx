@@ -5,6 +5,7 @@ import type { User } from "@supabase/supabase-js";
 import { config, type Components } from "./puck/config";
 import {
   loadOrSeedDraft,
+  loadPublishedPage,
   publishPage,
   saveDraft,
   type PuckData,
@@ -25,7 +26,54 @@ type SaveStatus =
 const getErrorMessage = (error: unknown) =>
   error instanceof Error ? error.message : "Something went wrong.";
 
+const isAdminRoute =
+  window.location.pathname === "/admin" ||
+  window.location.pathname.startsWith("/admin/");
+
 function App() {
+  return isAdminRoute ? <AdminEditor /> : <PublicPortfolio />;
+}
+
+function PublicPortfolio() {
+  const [data, setData] = useState<PuckData | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let isCancelled = false;
+
+    void loadPublishedPage()
+      .then((publishedData) => {
+        if (!isCancelled) setData(publishedData);
+      })
+      .catch((loadError: unknown) => {
+        if (!isCancelled) setError(getErrorMessage(loadError));
+      });
+
+    return () => {
+      isCancelled = true;
+    };
+  }, []);
+
+  if (error) {
+    return (
+      <main className="app__toolbar" role="alert">
+        Unable to load the portfolio: {error}
+      </main>
+    );
+  }
+
+  if (!data) {
+    return <div className="app__toolbar">Loading portfolio…</div>;
+  }
+
+  return (
+    <main className="app">
+      <Render config={config} data={data} />
+    </main>
+  );
+}
+
+function AdminEditor() {
   const [user, setUser] = useState<User | null>(null);
   const [data, setData] = useState<Data<Components> | null>(null);
   const [mode, setMode] = useState<Mode>("edit");
