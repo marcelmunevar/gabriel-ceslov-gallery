@@ -18,6 +18,53 @@
 }
 
 .app__title {
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.app__toggle {
+  font: inherit;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  background: #e8e2d8;
+  color: #1c1c1c;
+  cursor: pointer;
+}
+
+.app__toggle:hover {
+  background: #fff;
+}
+
+/* Portfolio section styles (shared by editor canvas and preview) */
+
+.pv-hero {
+  position: relative;
+  min-height: 480px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #2b2b2b;
+  background-size: cover;
+  background-position: center;
+}
+
+.pv-hero__overlay {
+  background: rgba(0, 0, 0, 0.35);
+  width: 100%;
+  height: 100%;
+  min-height: 480px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px;
+  color: #f2ede4;
+}
+
+.pv-hero__heading {
   font-family: Georgia, serif;
   font-size: 48px;
   margin: 0 0 12px;
