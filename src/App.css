@@ -18,53 +18,6 @@
 }
 
 .app__title {
-  font-weight: 600;
-  letter-spacing: 0.02em;
-}
-
-.app__toggle {
-  font: inherit;
-  font-weight: 600;
-  padding: 8px 16px;
-  border-radius: 6px;
-  border: none;
-  background: #e8e2d8;
-  color: #1c1c1c;
-  cursor: pointer;
-}
-
-.app__toggle:hover {
-  background: #fff;
-}
-
-/* Portfolio section styles (shared by editor canvas and preview) */
-
-.pv-hero {
-  position: relative;
-  min-height: 480px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #2b2b2b;
-  background-size: cover;
-  background-position: center;
-}
-
-.pv-hero__overlay {
-  background: rgba(0, 0, 0, 0.35);
-  width: 100%;
-  height: 100%;
-  min-height: 480px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 40px;
-  color: #f2ede4;
-}
-
-.pv-hero__heading {
   font-family: Georgia, serif;
   font-size: 48px;
   margin: 0 0 12px;
@@ -144,50 +97,6 @@
   margin-top: 6px;
   font-size: 13px;
   color: #666;
-}
-
-.pv-project {
-  display: flex;
-  gap: 32px;
-  padding: 48px 24px;
-  max-width: 1000px;
-  margin: 0 auto;
-  align-items: center;
-}
-
-.pv-project__image {
-  flex: 1 1 40%;
-  width: 100%;
-  border-radius: 4px;
-  object-fit: cover;
-  aspect-ratio: 4 / 3;
-}
-
-.pv-project__details {
-  flex: 1 1 60%;
-}
-
-.pv-project__title {
-  font-family: Georgia, serif;
-  margin: 0 0 8px;
-}
-
-.pv-project__meta {
-  color: #888;
-  font-size: 14px;
-  margin: 0 0 12px;
-}
-
-.pv-project__description {
-  line-height: 1.6;
-  color: #333;
-}
-
-.pv-project__link {
-  display: inline-block;
-  margin-top: 16px;
-  color: #1c1c1c;
-  font-weight: 600;
 }
 
 /* Custom image upload field */

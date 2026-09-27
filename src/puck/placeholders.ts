@@ -37,5 +37,4 @@ export const placeholderImages = {
   gallery2: svgDataUri("#3f4a52", "#f2ede4", "Gallery II"),
   gallery3: svgDataUri("#4d4038", "#f2ede4", "Gallery III"),
   gallery4: svgDataUri("#333d3a", "#f2ede4", "Gallery IV"),
-  project1: svgDataUri("#2f2f2f", "#e8e2d8", "Project One"),
 };

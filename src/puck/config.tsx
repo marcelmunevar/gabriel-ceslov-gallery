@@ -27,14 +27,6 @@ export type Components = {
     columns: "2" | "3" | "4";
     images: GalleryImage[];
   };
-  Project: {
-    title: string;
-    role: string;
-    year: string;
-    description: string;
-    image: string;
-    link: string;
-  };
 };
 
 export const config: Config<Components> = {
@@ -46,10 +38,6 @@ export const config: Config<Components> = {
     media: {
       title: "Media",
       components: ["Image", "Gallery"],
-    },
-    showcase: {
-      title: "Showcase",
-      components: ["Project"],
     },
   },
   components: {
@@ -170,50 +158,6 @@ export const config: Config<Components> = {
               {item.caption && <figcaption>{item.caption}</figcaption>}
             </figure>
           ))}
-        </section>
-      ),
-    },
-    Project: {
-      fields: {
-        title: { type: "text", label: "Title" },
-        role: { type: "text", label: "Role" },
-        year: { type: "text", label: "Year" },
-        description: { type: "textarea", label: "Description" },
-        image: { ...imageField, label: "Image" },
-        link: { type: "text", label: "Link (optional)" },
-      },
-      defaultProps: {
-        title: "Project Title",
-        role: "",
-        year: "",
-        description: "Describe this project.",
-        image: "",
-        link: "",
-      },
-      render: ({ title, role, year, description, image, link }) => (
-        <section className="pv-project">
-          {image && (
-            <img className="pv-project__image" src={image} alt={title} />
-          )}
-          <div className="pv-project__details">
-            <h3 className="pv-project__title">{title}</h3>
-            {(role || year) && (
-              <p className="pv-project__meta">
-                {[role, year].filter(Boolean).join(" · ")}
-              </p>
-            )}
-            <p className="pv-project__description">{description}</p>
-            {link && (
-              <a
-                className="pv-project__link"
-                href={link}
-                target="_blank"
-                rel="noreferrer"
-              >
-                View project ↗
-              </a>
-            )}
-          </div>
         </section>
       ),
     },
