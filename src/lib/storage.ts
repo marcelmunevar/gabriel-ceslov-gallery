@@ -68,9 +68,7 @@ export async function deletePortfolioImage(value: string) {
 
   const { data, error: userError } = await supabase.auth.getUser();
   if (userError) throw userError;
-  if (!data.user || path.split("/")[0] !== data.user.id) {
-    throw new Error("You can only delete your own portfolio images.");
-  }
+  if (!data.user) throw new Error("Sign in before deleting an image.");
 
   const { error } = await supabase.storage
     .from(PORTFOLIO_IMAGES_BUCKET)
