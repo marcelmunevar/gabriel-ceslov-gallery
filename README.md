@@ -42,31 +42,32 @@ Create a Supabase project with:
 - Data API enabled
 - Automatic table exposure disabled
 - Automatic RLS enabled
-- GitHub integration optional
 
-### Auth owner
+### Editor accounts
 
-Create the single owner account in Supabase under **Authentication > Users**.
-The application intentionally has no public sign-up flow. Use that account to
-sign in at `/admin`.
+Create each editor account in Supabase under **Authentication > Users**. The
+application has no public sign-up or invitation flow. Any authenticated user
+can manage drafts, publish pages, and manage images in the `portfolio-images`
+bucket. Use an editor account to sign in at `/admin`.
 
 ### Database migrations
 
-Run these migrations in order from the Supabase SQL Editor:
+Apply these migrations manually, in order, using the Supabase SQL Editor (or
+`supabase db push` if the project is linked and the CLI is configured):
 
 1. `supabase/migrations/20260927155648_create_gallery_pages.sql`
 2. `supabase/migrations/20260927160511_secure_portfolio_image_storage.sql`
+3. `supabase/migrations/20260928120000_allow_shared_editing.sql`
 
-The first migration creates:
+The first migration creates `page_drafts` for editable Puck JSON and
+`published_pages` for public page content. Both use JSONB content, unique slugs,
+owner UUIDs, timestamps, Data API grants, and Row Level Security. `owner_id`
+records the user who created or most recently saved/published each row.
 
-- `page_drafts`: owner-only editable Puck JSON
-- `published_pages`: publicly readable Puck JSON
-
-Both tables use JSONB content, unique slugs, owner UUIDs, timestamps, explicit
-Data API grants, and Row Level Security policies.
-
-The second migration restricts Storage API operations to paths beginning with
-the authenticated user's UUID.
+The second migration initially restricts Storage operations to paths beginning
+with the authenticated user's UUID. The third replaces the owner-only database
+and Storage policies so any authenticated user can manage gallery content and
+images. Public visitors can still only read published pages and public images.
 
 ### Storage bucket
 
@@ -74,11 +75,7 @@ Create a public bucket named `portfolio-images` with:
 
 - Public access: enabled
 - File size limit: `5 MB` (`5242880` bytes)
-- Allowed MIME types:
-  - `image/jpeg`
-  - `image/png`
-  - `image/webp`
-  - `image/avif`
+- Allowed MIME types: `image/jpeg`, `image/png`, `image/webp`, `image/avif`
 
 Uploaded files use this path format:
 
@@ -86,21 +83,22 @@ Uploaded files use this path format:
 {owner-uuid}/{generated-uuid}.{extension}
 ```
 
-Public image URLs are stored in Puck data. The editor validates file size and
-MIME type before uploading. SVG uploads are intentionally excluded.
+Public image URLs are stored in Puck data. Files are stored under the UUID of
+the uploader, but any authenticated editor can manage images in the bucket.
+The editor validates file size and MIME type before uploading. SVG uploads are
+intentionally excluded.
 
 ## Content persistence
 
 Puck data is stored as JSONB because the current content model is page-builder
-data. The typed data layer lives in `src/lib/content.ts` and provides:
+data. The typed data layer in `src/lib/content.ts` handles draft loading and
+initial seeding, debounced draft saves, published-page loading, and explicit
+publishing from the Puck Publish action. `sampleData` contains development
+placeholders; production images use Supabase Storage URLs.
 
-- Draft loading and initial seeding from `sampleData`
-- Debounced draft saves from Puck changes
-- Published-page loading for `/`
-- Explicit publishing from the Puck Publish action
-
-`sampleData` contains development placeholders. Uploaded production images use
-Supabase Storage URLs instead of data URLs.
+Multiple authenticated editors can work on the same content. Saves use
+last-write-wins, with no live synchronization or conflict merging, so
+simultaneous edits can overwrite one another.
 
 ## Verification
 
@@ -113,20 +111,19 @@ npm run lint
 
 Manual checks:
 
-1. Open `/` while signed out and confirm the public page does not show login.
-2. Open `/admin`, sign in, and confirm the draft loads.
-3. Edit text, wait for the save status, reload, and confirm the draft survives.
+1. Open `/` while signed out and confirm the public page loads without login.
+2. Sign in at `/admin` with two different editor accounts and confirm both can
+   load and edit the same draft.
+3. Save a draft, reload, and confirm the changes persist.
 4. Upload an allowed image and confirm it remains available after reload.
 5. Publish, then confirm `/` shows the published content.
-6. Make another draft edit and confirm `/` does not change until publishing again.
+6. Confirm later draft edits do not change `/` until publishing again.
 
 ## Deployment
 
 Set `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` in the hosting
-provider's build environment. Do not commit `.env.local`.
-
-Because this is a Vite SPA, configure the host to serve `index.html` for direct
-requests to `/admin`.
+provider's build environment. Do not commit `.env.local`. Configure the host to
+serve `index.html` for direct requests to `/admin`.
 
 For Netlify, create `public/_redirects`:
 
@@ -174,3 +171,7 @@ If you are developing a production application, we recommend enabling type-aware
 ```
 
 See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+
+Multiple authenticated editors can work on the same content. Saves use
+last-write-wins; there is no live synchronization or conflict merging, so
+simultaneous edits can overwrite one another.
